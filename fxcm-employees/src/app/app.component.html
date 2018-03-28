@@ -1,0 +1,100 @@
+<div id="wrapper">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/FXCM_logo.svg/2000px-FXCM_logo.svg.png" alt="logo"
+       class="logo">
+
+  <section class="container">
+    <nav>
+      <ul>
+        <li [ngClass]="{ 'active-left': showHome }" (click)="toggleDisplay()"><a href="#">Home</a></li>
+        <li [ngClass]="{ 'active-right': showAdmin }" (click)="toggleDisplay()"><a href="#">Admin</a></li>
+
+      </ul>
+    </nav>
+
+    <section *ngIf="showHome" class="search">
+      <form (ngSubmit)="searchFunc()" [formGroup]="search">
+        <p *ngIf="inputFail">Please fill the search input</p>
+        <p *ngIf="critFail">Please choose a criteria</p>
+        <label for="select">Search</label>
+        <input (change)="onChangeInput($event.target.value)" formControlName="input" type="text" placeholder="Who are you looking for..">
+        <select (change)="onChange($event.target.value)" id="select">
+          <option value="search by criteria" selected disabled>search by criteria</option>
+          <option value="name">Name</option>
+          <option value="phone">Phone number</option>
+          <option value="department">Department</option>
+        </select>
+        <button type="submit">&#x2315;</button>
+      </form>
+
+      <section *ngIf="showAllEmployees" class="results">
+        <h1>All employees</h1>
+        <table class="table table-striped table-selection">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Department</th>
+            <th>Email</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let employee of employees">
+            <td>{{employee.name}}</td>
+            <td>{{employee.phone}}</td>
+            <td>{{employee.department}}</td>
+            <td>{{employee.email}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section *ngIf="!showAllEmployees" class="results">
+        <h1>Results for: {{searchInput}}</h1>
+        <p *ngIf="noResults">No results found.</p>
+        <table *ngIf="!noResults" class="table table-striped table-selection">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Department</th>
+            <th>Email</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let employee of filteredUsers">
+            <td>{{employee.name}}</td>
+            <td>{{employee.phone}}</td>
+            <td>{{employee.department}}</td>
+            <td>{{employee.email}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <section *ngIf="showAdmin">
+      <section class="admin">
+        <form (ngSubmit)="createUser()" [formGroup]="create" class="left-side">
+          <label>Name</label>
+          <input formControlName="name" type="text" placeholder="Name">
+          <label>Phone</label>
+          <input formControlName="phone" type="text" placeholder="Phone">
+          <label>Department</label>
+          <input formControlName="department" type="text" placeholder="Department">
+
+          <button type="submit">Create Employee</button>
+        </form>
+
+        <div class="right-side">
+          <label>Choose a employee</label>
+          <select (change)="onChangeDel($event.target.value)">
+            <option value="delete-employee" selected disabled>choose a employee</option>
+            <option *ngFor="let employee of employees" value={{employee.name}}>{{employee.name}}</option>
+          </select>
+          <button (click)="deleteEmploy()" type="submit">Delete Employee</button>
+        </div>
+      </section>
+    </section>
+
+  </section>
+</div>
